@@ -1,0 +1,21 @@
+seed: 42
+train_data: data/100/train
+eval_data: data/100/train_0331
+
+num_workers: 2
+kmeans_init: true
+init_datasize: 50000
+normalize: true
+
+global_batch_size: 16384
+
+rqkmeans:
+  dim: 100
+  codebook_size: 1024
+  n_layers: 3
+
+  max_iters: 300
+  tol: 1.0e-3
+  reset_threshold: 2
+  balance_factor: 0.1
+

@@ -1,0 +1,84 @@
+log_with: tensorboard
+seed: 42
+train_data: data/train
+cl_data: data/cl
+eval_data: data/train_0406
+use_contrastive: true
+cl_interval: 10
+
+
+mixed_precision: "no"
+gradient_accumulation_steps: 1
+checkpoint_path: null
+
+num_workers: 4
+init_datasize: 50000
+normalize: true
+
+global_batch_size: 8192
+epochs: 109
+save_step: 3000
+eval_step: 3000
+log_step: 50
+learning_rate: 1.0e-4
+weight_decay: 1.0e-4
+
+model:
+  input_dim: 1024
+  hidden_dims:
+    - 512
+    - 256
+  embed_dim: 64
+  codebook_size: 1024
+  codebook_kmeans_init: true
+  quantize_layers: 3
+  commitment_weight: 0.1
+  normalize: false
+  dropout: 0.05
+  forward_mode: 'rotation_trick'
+  gumbel_temperature: 0.2
+  sim_vq: true
+  freeze_embedding: false
+  use_sinkhorn: false
+  sinkhorn_iters: 3
+  sinkhorn_epsilon: 10.0
+  ema: false
+  ema_dead_threshold: 3
+  ema_decay: 0.9
+  ema_eps: 1.0e-5
+
+criterion:
+  auxiliary:
+    act_func: 'sigmoid'
+    layer_weights:
+      - 1.0
+      - 1.0
+      - 1.0
+    loss_weight: 0.0
+
+  global_quantize:
+    commitment_weight: 0.1
+    loss_weight: 0.0
+
+  info_nce:
+    temperature: 0.1
+    layer_weights:
+      - 1.0
+      - 0.1
+      - 0.01
+    loss_weight: 0.05
+
+  encoder_cl:
+    temperature: 0.1
+    loss_weight: 0.0
+
+  prefix_collision:
+    prefix_margins:
+      - 0.6
+      - 0.8
+      - 0.9
+    prefix_weights:
+      - 0.1
+      - 0.5
+      - 1.0
+    loss_weight: 0.05

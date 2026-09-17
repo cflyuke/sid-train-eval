@@ -1,0 +1,79 @@
+log_with: tensorboard
+seed: 42
+train_data: data/100/train
+eval_data: data/100/train_0406
+
+
+mixed_precision: "no"
+gradient_accumulation_steps: 1
+checkpoint_path: '/root/paddlejob/workspace/Users/chengfeilin/gr/output/rqvae/2026-04-02_20-15-44/checkpoint_epoch_119_step_15000.pt'
+
+num_workers: 4
+init_datasize: 50000
+normalize: true
+
+global_batch_size: 16384
+epochs: 150
+save_step: 3000
+eval_step: 1000
+log_step: 50
+learning_rate: 1.0e-4
+weight_decay: 1.0e-4
+
+model:
+  input_dim: 100
+  hidden_dims:
+    - 64
+  embed_dim: 64
+  codebook_size: 1024
+  codebook_kmeans_init: true
+  quantize_layers: 3
+  commitment_weight: 0.1
+  normalize: false
+  dropout: 0.05
+  forward_mode: 'ste'
+  gumbel_temperature: 0.2
+  sim_vq: false
+  freeze_embedding: false
+  use_sinkhorn: false
+  sinkhorn_iters: 5
+  sinkhorn_epsilon: 10.0
+  ema: true
+  ema_dead_threshold: 3
+  ema_decay: 0.9
+  ema_eps: 1.0e-5
+
+criterion:
+  use_contrastive: false
+
+  auxiliary:
+    act_func: 'sigmoid'
+    layer_weights:
+      - 1.0
+      - 1.0
+      - 1.0
+    loss_weight: 0.0
+
+  global_quantize:
+    commitment_weight: 0.1
+    loss_weight: 0.0
+
+  info_nce:
+    temperature: 0.1
+    layer_weights:
+      - 1.0
+      - 0.1
+      - 0.01
+    loss_weight: 0.0
+
+  encoder_cl:
+    temperature: 0.1
+    loss_weight: 0.1
+
+  hamr:
+    m_full: 0.8
+    m_partial: 0.5
+    lambda_full: 0.1
+    lambda_partial: 0.1
+    radius: 1
+    loss_weight: 1.0
